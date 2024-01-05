@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Socket.IO</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1>Socket.IO</h1>
+    <input type="text" name="message-input" id="message-input" />
+    <button id="send-button">Enviar</button>
+    <button id="masivo-button">Masivo</button>
+    <script>
+      const socket = io("http://localhost:3000", {
+        transports: ["websocket", "polling"],
+      });
+
+      socket.on("connect", () => {
+        console.log("Conectado al servidor de Socket.IO");
+      });
+
+      socket.on("notification", (msg) => {
+        alert(msg + "llego");
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Desconectado del servidor de Socket.IO");
+      });
+
+      // Enviar un mensaje al servidor
+      document.getElementById("send-button").addEventListener("click", () => {
+        const message = document.getElementById("message-input").value;
+        socket.emit("mensaje", message);
+      });
+
+      // Enviar un mensaje masivo al servidor
+      document.getElementById("masivo-button").addEventListener("click", () => {
+        socket.emit("mensajeMasivo", "Este es un mensaje masivo");
+      });
+
+      // Escuchar el evento "mensajeMasivo" del servidor
+      socket.on("mensajeMasivo", (msg) => {
+        alert("Mensaje masivo recibido: " + msg);
+      });
+    </script>
+  </body>
+</html>
